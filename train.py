@@ -100,7 +100,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         # Exponential Moving Average
         if opt.E_decay > 0:
-            model.update_E(opt.E_decay)
+            model.module.update_E(opt.E_decay)
 
         
 
