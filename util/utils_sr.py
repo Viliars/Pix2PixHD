@@ -12,22 +12,24 @@ def add_JPEG_noise(img, quality_factor):
     return img
 
 def get_face_pair(img_LQ, img_HQ):
-    size = int(1024//round(random.uniform(1.0, 5.0), 2))
-    interpolation = random.choice([1, 2, 3])
+    if random.random() > 0.5:
+        size = int(1024//round(random.uniform(2.0, 5.0), 2))
+        interpolation = random.choice([1, 2, 3])
 
-    # resize
-    img_LQ = cv2.resize(img_LQ, (size, size), interpolation=interpolation)
-    img_HQ = cv2.resize(img_HQ, (size, size), interpolation=interpolation)
+        # resize
+        img_LQ = cv2.resize(img_LQ, (size, size), interpolation=interpolation)
+        img_HQ = cv2.resize(img_HQ, (size, size), interpolation=interpolation)
 
-    interpolation = random.choice([1, 2, 3])
-    # resize
-    img_LQ = cv2.resize(img_LQ, (512, 512), interpolation=interpolation)
-    img_HQ = cv2.resize(img_HQ, (512, 512), interpolation=interpolation)
+        interpolation = random.choice([1, 2, 3])
+        # resize
+        img_LQ = cv2.resize(img_LQ, (512, 512), interpolation=interpolation)
+        img_HQ = cv2.resize(img_HQ, (512, 512), interpolation=interpolation)
 
-    quality_factor = random.randint(60, 95)
+        if random.random() > 0.5:
+            quality_factor = random.randint(60, 95)
 
-    img_LQ = add_JPEG_noise(img_LQ, quality_factor)
-    img_HQ = add_JPEG_noise(img_HQ, quality_factor)
+            img_LQ = add_JPEG_noise(img_LQ, quality_factor)
+            img_HQ = add_JPEG_noise(img_HQ, quality_factor)
 
     return img_LQ, img_HQ
 
