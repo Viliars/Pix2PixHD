@@ -265,7 +265,7 @@ class Encoder(nn.Module):
             model += [nn.Conv2d(ngf * mult, ngf * mult * 2, kernel_size=3, stride=2, padding=1),
                       norm_layer(ngf * mult * 2), nn.ReLU(True)]
 
-        ### upsample
+        ### upsample jb
         for i in range(n_downsampling):
             mult = 2**(n_downsampling - i)
             model += [nn.ConvTranspose2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=2, padding=1, output_padding=1),

@@ -4,6 +4,8 @@ from data.image_folder import make_dataset
 from PIL import Image
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+from util import utils_image as util
+from util.utils_sr import get_face_pair
 
 import torch
 
@@ -47,11 +49,26 @@ class AlignedDataset(BaseDataset):
     def __getitem__(self, index):
         ### input A (label maps)
         A_path = self.A_paths[index]
-        A = Image.open(A_path)
+        B_path = self.B_paths[index]
+
+        lq = util.imread_uint(A_path, 3)
+        hq = util.imread_uint(B_path, 3)
+
+        hq = util.uint2single(hq)
+        lq = util.uint2single(lq)
+
+
+        img_lq, img_hq = get_face_pair(lq, hq)
+        img_lq = util.single2uint(img_lq)
+        img_hq = util.single2uint(img_hq)
+
+        A = Image.fromarray(img_lq)
+        B = Image.fromarray(img_hq)
+
         params = get_params(self.opt, A.size)
         if self.opt.label_nc == 0:
             transform_A = get_transform(self.opt, params)
-            A_tensor = transform_A(A.convert('RGB'))
+            A_tensor = transform_A(A)
 
             if self.C_paths:
                 C_path = self.C_paths[index]
@@ -67,8 +84,6 @@ class AlignedDataset(BaseDataset):
         B_tensor = inst_tensor = feat_tensor = 0
         ### input B (real images)
         if self.opt.isTrain or self.opt.use_encoded_image:
-            B_path = self.B_paths[index]
-            B = Image.open(B_path).convert('RGB')
             transform_B = get_transform(self.opt, params)
             B_tensor = transform_B(B)
 
